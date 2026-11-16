@@ -19,6 +19,11 @@
 - `git pull fork master` 只更新 `sync/fork-master` 的内容，**不会删除任何本地分支，也不会碰其他分支**。
 - 已推到 GitHub 的分支（`docs/upgrade-playbook`、`sync/fork-master`）**只有你手动删才会消失**；上游更新 master 不影响它们。
 
+> **⚠️ `master` 保持为上游镜像，永远不要把本地文档/改动合入 master。**
+> fork 的 `master` 是跟上游（`JamesWang0722` 原仓库）对接的镜像分支，同步靠它快进（fast-forward）。
+> 一旦把文档或本地提交合进 `master`，下次 `git pull fork master` 就会和上游历史分叉，必须 merge/rebase，容易冲突，同步就变麻烦。
+> 本地文档一律放独立分支（如 `docs/upgrade-playbook`），**不要开 PR 合进 master**。
+
 ---
 
 ## 2. 一键同步（标准流程）
@@ -73,12 +78,13 @@ git rebase sync/fork-master
 ## 5. 红线
 
 1. **不要**在 `sync/fork-master` 上改代码——它是镜像，改了会和上游冲突。
-2. **不要**用 `origin`（原仓库）推送——你没有它的写权限（会 403）。推送用 `fork`。
-3. `git pull` 冲突时不要盲目 `reset --hard` 丢掉本地工作；先看清楚是哪边改动，必要时 `git stash`。
-4. 本文件与 `docs/UPGRADE-PLAYBOOK.md` 同属文档沉淀，不随上游代码逻辑变化而失效；上游若改了分支模型，回来更新本文件。
+2. **不要把任何本地改动/文档合入（PR 进）`master`**——master 是上游镜像，合入会让同步分叉、冲突。文档放独立分支。
+3. **不要**用 `origin`（原仓库）推送——你没有它的写权限（会 403）。推送用 `fork`。
+4. `git pull` 冲突时不要盲目 `reset --hard` 丢掉本地工作；先看清楚是哪边改动，必要时 `git stash`。
+5. 本文件与 `docs/UPGRADE-PLAYBOOK.md` 同属文档沉淀，不随上游代码逻辑变化而失效；上游若改了分支模型，回来更新本文件。
 
 ---
 
 ## 6. 一句话记忆
 
-> **同步 = `checkout sync/fork-master` + `pull fork master`；干活 = 从 sync 分支开新分支；推送 = `push fork`。**
+> **同步 = `checkout sync/fork-master` + `pull fork master`；干活 = 从 sync 分支开新分支；推送 = `push fork`；`master` 保持纯净不合文档。**
